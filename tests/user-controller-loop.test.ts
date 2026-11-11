@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { StatusCodes } from 'http-status-codes';
 let baseURL: string = 'http://localhost:3000/users';
 
 test.describe('User management API with loop', () => {
@@ -26,12 +27,12 @@ test.describe('User management API with loop', () => {
             // delete user by id
             let response = await request.delete(`${baseURL}/${userIDs[i]}`);
             // validate the response status code
-            expect.soft(response.status()).toBe(200);
+            expect.soft(response.status()).toBe(StatusCodes.OK);
         }
 
         // verify that all users are deleted
         const responseAfterDelete = await request.get(`${baseURL}`);
-        expect(responseAfterDelete.status()).toBe(200);
+        expect(responseAfterDelete.status()).toBe(StatusCodes.OK);
         const responseBodyEmpty = await responseAfterDelete.text()
         // validate that the response is an empty array
         expect(responseBodyEmpty).toBe('[]');
@@ -49,7 +50,7 @@ test.describe('User management API with loop', () => {
 
     test('GET / - should return empty when no users', async ({ request }) => {
         const response = await request.get(`${baseURL}`);
-        expect(response.status()).toBe(200);
+        expect(response.status()).toBe(StatusCodes.OK);
         const responseBody = await response.text()
         expect(responseBody).toBe('[]');
     });
@@ -81,11 +82,11 @@ test.describe('User management API with loop', () => {
         // delete all users in a loop
         for (const user of allUsers) {
             const response = await request.delete(`${baseURL}/${user.id}`);
-            expect.soft(response.status()).toBe(200);
+            expect.soft(response.status()).toBe(StatusCodes.OK);
         }
 
         const responseAfterDelete = await request.get(`${baseURL}`);
-        expect(responseAfterDelete.status()).toBe(200);
+        expect(responseAfterDelete.status()).toBe(StatusCodes.OK);
         expect(await responseAfterDelete.text()).toBe('[]');
     });
 
@@ -100,7 +101,7 @@ test.describe('User management API with loop', () => {
 
         // delete the first user
         const deleteResponse = await request.delete(`${baseURL}/${createdUsers[0].id}`);
-        expect(deleteResponse.status()).toBe(200);
+        expect(deleteResponse.status()).toBe(StatusCodes.OK);
 
         // other 2 users are still there
         const responseAllUsers = await request.get(`${baseURL}`);
